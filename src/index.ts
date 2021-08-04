@@ -1,4 +1,4 @@
-import Client from './RedisClient';
-import Timeout from './RedisTimeout';
+import Client, { ClientType } from './RedisClient';
+import Timeout, { TimeoutType } from './RedisTimeout';
 
-export { Client, Timeout };
+export { Client, Timeout, ClientType, TimeoutType };

@@ -4,7 +4,7 @@ type SetOptions = {
     ttl: number;
 };
 
-type ClientType = {
+export type ClientType = {
     close: () => void;
     clear: () => void;
     set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
