@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-declare type TimeoutType = {
+export declare type TimeoutType = {
     /**
      * Sets the callback that's called when a key expires.
      * Needs a single callback because redis cannot listen to a single key event

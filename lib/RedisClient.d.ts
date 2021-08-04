@@ -2,7 +2,7 @@ import * as redis from 'redis';
 declare type SetOptions = {
     ttl: number;
 };
-declare type ClientType = {
+export declare type ClientType = {
     close: () => void;
     clear: () => void;
     set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
