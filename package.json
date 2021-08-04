@@ -2,7 +2,7 @@
     "name": "redis-client",
     "version": "0.0.1",
     "description": "Redis client promisified",
-    "main": "index.js",
+    "main": "lib/index.js",
     "repository": "git@gitlab.com:mindtechdev/modules/redis-client.git",
     "author": "Mateus Mello <developer@mindtech.com.br>",
     "license": "MIT",
