@@ -5,11 +5,11 @@ declare type SetOptions = {
 export declare type ClientType = {
     close: () => void;
     clear: () => void;
-    set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
-    get: (key: string) => Promise<String | null | redis.RedisError>;
-    setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
-    getObject: <T = any>(key: string) => Promise<T | null | redis.RedisError>;
-    del: (key: string) => Promise<Boolean | redis.RedisError>;
+    set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean>;
+    get: (key: string) => Promise<String | null>;
+    setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
+    getObject: <T = any>(key: string) => Promise<T | null>;
+    del: (key: string) => Promise<Boolean>;
 };
 export declare function init(_opts?: redis.ClientOpts): Promise<redis.RedisClient>;
 declare function Client(opts?: redis.ClientOpts): Promise<ClientType>;

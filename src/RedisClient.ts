@@ -7,11 +7,11 @@ type SetOptions = {
 export type ClientType = {
     close: () => void;
     clear: () => void;
-    set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
-    get: (key: string) => Promise<String | null | redis.RedisError>;
-    setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean | redis.RedisError>;
-    getObject: <T = any>(key: string) => Promise<T | null | redis.RedisError>;
-    del: (key: string) => Promise<Boolean | redis.RedisError>;
+    set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean>;
+    get: (key: string) => Promise<String | null>;
+    setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
+    getObject: <T = any>(key: string) => Promise<T | null>;
+    del: (key: string) => Promise<Boolean>;
 };
 
 export function init(_opts?: redis.ClientOpts) {
@@ -42,7 +42,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
     }
 
     function set(key: string, payload: string, options?: { ttl: number }) {
-        return new Promise<Boolean | redis.RedisError>((resolve, reject) => {
+        return new Promise<Boolean>((resolve, reject) => {
             if (client) {
                 client.set(key, payload, (err, res) => {
                     if (err) reject(err);
@@ -62,7 +62,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
     }
 
     function setObject<T = any>(key: string, payload: T, options?: { ttl: number }) {
-        return new Promise<Boolean | redis.RedisError>((resolve, reject) => {
+        return new Promise<Boolean>((resolve, reject) => {
             if (client) {
                 const serializedJson = JSON.stringify(payload);
 
@@ -84,7 +84,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
     }
 
     function get(key: string) {
-        return new Promise<String | redis.RedisError | null>((resolve, reject) => {
+        return new Promise<String | null>((resolve, reject) => {
             if (client) {
                 client.get(key, (err, reply) => {
                     if (err) reject(err);
@@ -113,7 +113,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
     }
 
     function del(key: string) {
-        return new Promise<Boolean | redis.RedisError>((resolve, reject) => {
+        return new Promise<Boolean>((resolve, reject) => {
             if (client) {
                 client.del(key, (err, reply) => {
                     if (err) reject(err);
