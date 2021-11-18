@@ -3,7 +3,6 @@ export declare type TimeoutType = {
     /**
      * Sets the callback that's called when a key expires.
      * Needs a single callback because redis cannot listen to a single key event
-     * Planned to use as a timeout for the device API
      * @param cb callback thats called when a key is expired
      */
     setCallback: (cb: Function) => void;
