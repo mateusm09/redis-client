@@ -12,6 +12,7 @@ export type ClientType = {
     setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
     getObject: <T = any>(key: string) => Promise<T | null>;
     del: (key: string) => Promise<Boolean>;
+    client: redis.RedisClient;
 };
 
 export function init(_opts?: redis.ClientOpts) {
@@ -133,6 +134,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
         get,
         getObject,
         del,
+        client,
     };
 }
 
