@@ -1,12 +1,12 @@
 {
     "name": "redis-client",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Redis client promisified",
     "main": "lib/index.js",
-    "repository": "git@gitlab.com:mindtechdev/modules/redis-client.git",
+    "repository": "git@github.com:mateusm09/redis-client.git",
     "author": "Mateus Mello <developer@mindtech.com.br>",
     "license": "MIT",
-    "private": true,
+    "private": false,
     "scripts": {
         "test": "echo \"Test not specified\" && exit 1",
         "format": "prettier --write \"src/**/*.ts\"",
