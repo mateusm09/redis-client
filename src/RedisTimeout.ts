@@ -37,10 +37,10 @@ async function Timeout(opts: redis.ClientOpts): Promise<TimeoutType> {
     function setCallback(cb: Function) {
         subClient.on('message', async (channel, timeoutKey) => {
             const [id, key] = timeoutKey.split(':');
-            if (key) {
-                const data = await dataClient.getObject(key);
-                cb(data);
-            }
+            if (!key) return;
+            const data = await dataClient.getObject(key);
+            cb(data);
+            
             dataClient.del(key);
         });
     }
