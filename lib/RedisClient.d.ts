@@ -6,7 +6,7 @@ export declare type ClientType = {
     close: () => void;
     clear: () => void;
     set: (key: string, payload: string, options?: SetOptions) => Promise<Boolean>;
-    get: (key: string) => Promise<String | null>;
+    get: (key: string) => Promise<string | null>;
     setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
     getObject: <T = any>(key: string) => Promise<T | null>;
     del: (key: string) => Promise<Boolean>;
