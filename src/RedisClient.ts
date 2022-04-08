@@ -89,10 +89,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
         return new Promise<Boolean>(async (resolve, reject) => {
             if (!client) reject(new Error('client undefined'));
 
-            const obj = await getObject<T>(key);
-            if (!obj) reject(new Error('no object to update'));
-
-            const serializedJson = JSON.stringify({ ...obj, ...payload });
+            const serializedJson = JSON.stringify(payload);
 
             client.set(key, serializedJson, 'KEEPTTL', (err) => {
                 if (err) reject(err);
