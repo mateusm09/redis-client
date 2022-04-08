@@ -1,6 +1,7 @@
 import * as redis from 'redis';
 declare type SetOptions = {
-    ttl: number;
+    ttl?: number;
+    keepttl?: boolean;
 };
 export declare type ClientType = {
     close: () => void;

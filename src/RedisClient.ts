@@ -1,7 +1,8 @@
 import * as redis from 'redis';
 
 type SetOptions = {
-    ttl: number;
+    ttl?: number;
+    keepttl?: boolean;
 };
 
 export type ClientType = {
@@ -42,10 +43,10 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
         return client.flushall();
     }
 
-    function set(key: string, payload: string, options?: { ttl: number }) {
+    function set(key: string, payload: string, options?: SetOptions) {
         return new Promise<Boolean>((resolve, reject) => {
             if (client) {
-                client.set(key, payload, (err, res) => {
+                client.set(key, payload, options && options.keepttl ? 'KEEPTTL' : '', (err, res) => {
                     if (err) reject(err);
                     else if (options) {
                         if (options.ttl) {
@@ -62,12 +63,12 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
         });
     }
 
-    function setObject<T = any>(key: string, payload: T, options?: { ttl: number }) {
+    function setObject<T = any>(key: string, payload: T, options?: SetOptions) {
         return new Promise<Boolean>((resolve, reject) => {
             if (client) {
                 const serializedJson = JSON.stringify(payload);
 
-                client.set(key, serializedJson, (err) => {
+                client.set(key, serializedJson, options && options.keepttl ? 'KEEPTTL' : '', (err) => {
                     if (err) reject(err);
                     else if (options) {
                         if (options.ttl) {
