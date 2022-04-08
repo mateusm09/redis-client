@@ -86,7 +86,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
     }
 
     function updateObject<T = any>(key: string, payload: T) {
-        return new Promise<Boolean>(async (resolve, reject) => {
+        return new Promise<Boolean>((resolve, reject) => {
             if (!client) reject(new Error('client undefined'));
 
             const serializedJson = JSON.stringify(payload);
