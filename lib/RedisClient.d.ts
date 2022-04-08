@@ -10,6 +10,8 @@ export declare type ClientType = {
     get: (key: string) => Promise<string | null>;
     setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
     getObject: <T = any>(key: string) => Promise<T | null>;
+    update: (key: string, payload: string) => Promise<Boolean>;
+    updateObject: <T = any>(key: string, payload: T) => Promise<Boolean>;
     del: (key: string) => Promise<Boolean>;
     client: redis.RedisClient;
 };

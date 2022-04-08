@@ -12,6 +12,8 @@ export type ClientType = {
     get: (key: string) => Promise<string | null>;
     setObject: <T = any>(key: string, payload: T, options?: SetOptions) => Promise<Boolean>;
     getObject: <T = any>(key: string) => Promise<T | null>;
+    update: (key: string, payload: string) => Promise<Boolean>;
+    updateObject: <T = any>(key: string, payload: T) => Promise<Boolean>;
     del: (key: string) => Promise<Boolean>;
     client: redis.RedisClient;
 };
@@ -45,85 +47,95 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
 
     function set(key: string, payload: string, options?: SetOptions) {
         return new Promise<Boolean>((resolve, reject) => {
-            if (client) {
-                client.set(key, payload, options && options.keepttl ? 'KEEPTTL' : '', (err, res) => {
-                    if (err) reject(err);
-                    else if (options) {
-                        if (options.ttl) {
-                            client.expire(key, options.ttl, (err, res) => {
-                                if (err) reject(err);
-                                else resolve(true);
-                            });
-                        } else resolve(true);
-                    } else resolve(true);
-                });
-            } else {
-                reject(new Error('client undefined'));
-            }
+            if (!client) reject(new Error('client undefined'));
+
+            client.set(key, payload, (err) => {
+                if (err) reject(err);
+                if (options && options.ttl) {
+                    client.expire(key, options.ttl, reject);
+                }
+                resolve(true);
+            });
+        });
+    }
+
+    function update(key: string, payload: string) {
+        return new Promise<Boolean>((resolve, reject) => {
+            if (!client) reject(new Error('client undefined'));
+
+            client.set(key, payload, 'KEEPTTL', (err) => {
+                if (err) reject(err);
+                resolve(true);
+            });
         });
     }
 
     function setObject<T = any>(key: string, payload: T, options?: SetOptions) {
         return new Promise<Boolean>((resolve, reject) => {
-            if (client) {
-                const serializedJson = JSON.stringify(payload);
+            if (!client) reject(new Error('client undefined'));
 
-                client.set(key, serializedJson, options && options.keepttl ? 'KEEPTTL' : '', (err) => {
-                    if (err) reject(err);
-                    else if (options) {
-                        if (options.ttl) {
-                            client.expire(key, options.ttl, (redisErr) => {
-                                if (redisErr) reject(redisErr);
-                                else resolve(true);
-                            });
-                        } else resolve(true);
-                    } else resolve(true);
-                });
-            } else {
-                reject(new Error('client undefined'));
-            }
+            const serializedJson = JSON.stringify(payload);
+
+            client.set(key, serializedJson, (err) => {
+                if (err) reject(err);
+                if (options && options.ttl) {
+                    client.expire(key, options.ttl, reject);
+                }
+                resolve(true);
+            });
+        });
+    }
+
+    function updateObject<T = any>(key: string, payload: T) {
+        return new Promise<Boolean>(async (resolve, reject) => {
+            if (!client) reject(new Error('client undefined'));
+
+            const obj = await getObject<T>(key);
+            if (!obj) reject(new Error('no object to update'));
+
+            const serializedJson = JSON.stringify({ ...obj, ...payload });
+
+            client.set(key, serializedJson, 'KEEPTTL', (err) => {
+                if (err) reject(err);
+                resolve(true);
+            });
         });
     }
 
     function get(key: string) {
         return new Promise<string | null>((resolve, reject) => {
-            if (client) {
-                client.get(key, (err, reply) => {
-                    if (err) reject(err);
-                    else resolve(reply);
-                });
-            } else {
-                reject(new Error('client undefined'));
-            }
+            if (!client) reject(new Error('client undefined'));
+
+            client.get(key, (err, reply) => {
+                if (err) reject(err);
+
+                resolve(reply);
+            });
         });
     }
 
     function getObject<T = any>(key: string): Promise<T | null> {
         return new Promise<T | null>((resolve, reject) => {
-            if (client) {
-                client.get(key, (err, reply) => {
-                    if (err) reject(err);
-                    else {
-                        const obj = JSON.parse(reply!) as T;
-                        resolve(obj);
-                    }
-                });
-            } else {
-                reject(new Error('client undefined'));
-            }
+            if (!client) reject(new Error('client undefined'));
+
+            client.get(key, (err, reply) => {
+                if (err) reject(err);
+                if (!reply) reject(new Error('no data'));
+
+                const obj = JSON.parse(reply!) as T;
+                resolve(obj);
+            });
         });
     }
 
     function del(key: string) {
         return new Promise<Boolean>((resolve, reject) => {
-            if (client) {
-                client.del(key, (err, reply) => {
-                    if (err) reject(err);
-                    else resolve(true);
-                });
-            } else {
-                reject(new Error('client undefined'));
-            }
+            if (!client) reject(new Error('client undefined'));
+
+            client.del(key, (err) => {
+                if (err) reject(err);
+                resolve(true);
+            });
         });
     }
 
@@ -132,6 +144,8 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
         clear,
         set,
         setObject,
+        update,
+        updateObject,
         get,
         getObject,
         del,
