@@ -2,7 +2,6 @@ import * as redis from 'redis';
 
 type SetOptions = {
     ttl?: number;
-    keepttl?: boolean;
 };
 
 export type ClientType = {
