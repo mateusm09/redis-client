@@ -116,7 +116,7 @@ async function Client(opts?: redis.ClientOpts): Promise<ClientType> {
 
             client.get(key, (err, reply) => {
                 if (err) reject(err);
-                if (!reply) reject(new Error('no data'));
+                if (!reply) resolve(null);
 
                 const obj = JSON.parse(reply!) as T;
                 resolve(obj);
